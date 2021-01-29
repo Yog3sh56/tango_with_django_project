@@ -19,6 +19,9 @@ TEMPLATE_DIR = os.path.join(BASE_DIR, 'templates')
 # Pointing to the directory where static files are stored.
 STATIC_DIR = os.path.join(BASE_DIR, 'static')
 
+# Point to the directory where the media content is stored
+MEDIA_DIR = os.path.join(BASE_DIR, 'media')
+
 
 
 
@@ -69,6 +72,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.media',# Context processor to obtain a reference to the MEDIA_URL
+
             ],
         },
     },
@@ -128,3 +133,7 @@ STATIC_URL = '/static/'
 
 # Data structure that Django can parse to work out where our new directory is
 STATICFILES_DIRS = [STATIC_DIR, ]
+
+# Variables used by django to pick up and set up media file hosting
+MEDIA_ROOT = MEDIA_DIR
+MEDIA_URL = '/media/'
