@@ -14,7 +14,7 @@ admin.site.register(Page, PageAdmin)
 
 # Add in the class to customize the Admin Interface
 class CategoryAdmin(admin.ModelAdmin):
-    prepopulated_fields = {'slugs': ('name',)}
+    prepopulated_fields = {'slug': ('name',)}
 
 
 # Update the registration to include this customised interface
