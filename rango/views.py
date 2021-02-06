@@ -3,6 +3,8 @@ from django.http import HttpResponse
 # Import the Category model
 from rango.models import Category
 from rango.models import Page
+from rango.forms import CategoryForm
+from django.shortcuts import redirect
 
 
 # Create your views here.
@@ -62,3 +64,28 @@ def show_category(request, category_name_slug):
         context_dict['pages'] = None
 
     return render(request, 'rango/category.html', context=context_dict)
+
+
+def add_category(request):
+    form = CategoryForm()
+
+    # A HTTP POST? POST => did the user submit data via the form?
+    if request.method == 'POST':
+        form = CategoryForm(request.POST)
+
+        # Have we been provided with a valid form?
+        if form.is_valid():
+            # Save the new category to the database.
+            form.save(commit=True)
+            # Now that the category is saved, we could confirm this. for now just redirect user back to index view
+            return redirect('/rango/')
+        else:
+            # Just print them to the terminal
+            print(form.errors)
+
+    # Will handle the bad form, new form, or no form supplied cases.
+    # Render the form with error messages (if any).
+    return render(request, 'rango/add_category.html', {'forms': form})
+
+
+
