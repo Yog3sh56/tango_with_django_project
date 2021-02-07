@@ -28,3 +28,15 @@ class PageForm(forms.ModelForm):
         # For example we do not want to show fields that allow Null values.
         # Here in our case we are trying to hide the foreign key which is category.
         exclude = ('category',)
+
+        # Method to prepend the entered url with http://
+    def clean(self):
+        cleaned_data = self.cleaned_data
+        url = cleaned_data.get('url')
+
+        # If url is not empty and does not start with http:// then prepend http://
+        if url and not url.startswith('http://'):
+            url = f'http://{url}'
+            cleaned_data['url'] = url
+
+        return cleaned_data

@@ -3,8 +3,9 @@ from django.http import HttpResponse
 # Import the Category model
 from rango.models import Category
 from rango.models import Page
-from rango.forms import CategoryForm
+from rango.forms import CategoryForm, PageForm
 from django.shortcuts import redirect
+from django.urls import reverse
 
 
 # Create your views here.
@@ -66,7 +67,9 @@ def show_category(request, category_name_slug):
     return render(request, 'rango/category.html', context=context_dict)
 
 
+# View for add_category template
 def add_category(request):
+    # we have add the CategoryForm class in forms.py that was imported on the top
     form = CategoryForm()
 
     # A HTTP POST? POST => did the user submit data via the form?
@@ -85,7 +88,34 @@ def add_category(request):
 
     # Will handle the bad form, new form, or no form supplied cases.
     # Render the form with error messages (if any).
-    return render(request, 'rango/add_category.html', {'forms': form})
+    return render(request, 'rango/add_category.html', {'form': form})
 
 
+# View for add Pages allowing users to add pages to a given category
+def add_page(request, category_name_slug):
+    try:
+        category = Category.objects.get(slug=category_name_slug)
+    except Category.DoesNotExist:
+        category = None
 
+    if category is None:
+        return redirect('/rango/')
+
+    form = PageForm()
+
+    if request.method == "POST":
+        form = PageForm(request.POST)
+
+    if form.is_valid():
+        if category:
+            page = form.save(commit=False)
+            page.category = category
+            page.views = 0
+            page.save()
+
+            return redirect(reverse('rango:show_category', kwargs={'category_name_slug': category_name_slug}))
+        else:
+            print(form.errors)
+
+    context_dict = {'form': form, 'category': category}
+    return render(request, 'rango/add_page.html', context=context_dict)
