@@ -120,8 +120,8 @@ def add_page(request, category_name_slug):
     context_dict = {'form': form, 'category': category}
     return render(request, 'rango/add_page.html', context=context_dict)
 
-def register(request):
 
+def register(request):
     # A boolean value to keep track if the registration was successful
     registered = False
 
@@ -157,7 +157,7 @@ def register(request):
             profile.save()
 
             # Update the variable to indicate that the registration was successful
-            registered =True
+            registered = True
         else:
             print(user_form.errors, profile_form.errors)
 
