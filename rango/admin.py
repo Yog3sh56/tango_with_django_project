@@ -1,5 +1,7 @@
 from django.contrib import admin
 from rango.models import Category, Page
+from rango.models import UserProfile
+
 
 # Register your models here.
 #admin.site.register(Category)
@@ -19,3 +21,6 @@ class CategoryAdmin(admin.ModelAdmin):
 
 # Update the registration to include this customised interface
 admin.site.register(Category, CategoryAdmin)
+
+# Register the new model with the admin interface
+admin.site.register(UserProfile)
