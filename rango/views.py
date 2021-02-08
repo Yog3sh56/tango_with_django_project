@@ -6,6 +6,7 @@ from rango.models import Page
 from rango.forms import CategoryForm, PageForm, UserForm, UserProfileForm
 from django.shortcuts import redirect
 from django.urls import reverse
+from django.contrib.auth import authenticate, login
 
 
 # Create your views here.
@@ -172,3 +173,35 @@ def register(request):
                   context={'user_form': user_form,
                            'profile_form': profile_form,
                            'registered': registered})
+
+
+def user_login(request):
+    # If the request is a POST then extract the information from the request
+    if request.method == 'POST':
+
+        # Gather the information from login form provided by the user We use get method instead of getting it as a
+        # list is because, get would return None if it doesnot exist while getting it as a list(or value of a given
+        # key) would raise an KeyError
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+
+        # Check with django's built in machinery to attempt to check if username and password are valid
+        # Returns an user object if they are valid
+
+        user = authenticate(username=username, password=password)
+
+        # So if we do have user object then the details are correct, if not its invalid
+        if user:
+            # Also check if the account is active
+            if user.is_active:
+                # If details are correct, we can log the user in and send them to the homepage
+                login(request, user)
+                return redirect(reverse('rango:index'))
+            else:
+                return HttpResponse("Your Rango account is disabled.")
+        else:
+            print(f'Invalid login details: {username}, {password}')
+            return HttpResponse("Invalid login details supplied.")
+
+    else:
+        return render(request, 'rango/login.html')
